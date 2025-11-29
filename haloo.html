@@ -1,0 +1,163 @@
+
+   <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>haloo's website</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #ffffff; color: #333333; margin: 0; padding: 0; line-height: 1.6; }
+        header { background: linear-gradient(to right, #f0f0f0, #e0e0e0); padding: 30px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { color: #ff69b4; font-size: 2.5em; margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        nav { margin-top: 20px; }
+        nav a { color: #ff69b4; text-decoration: none; margin: 0 15px; font-weight: bold; transition: color 0.3s; }
+        nav a:hover { color: #ff1493; }
+        .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 40px; max-width: 1200px; margin: 0 auto; }
+        .product { background-color: #f8f8f8; border: 1px solid #cccccc; padding: 20px; text-align: center; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .product:hover { transform: translateY(-5px); }
+        .product img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+        button { background-color: #ff69b4; color: white; border: none; padding: 12px 25px; cursor: pointer; border-radius: 25px; font-size: 1em; transition: background-color 0.3s; }
+        button:hover { background-color: #ff1493; }
+        .cart-toggle { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background-color: #ff69b4; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; transition: background-color 0.3s; }
+        .cart-toggle:hover { background-color: #ff1493; }
+        .cart-toggle::before { content: '🛒'; font-size: 24px; }
+        .cart { position: fixed; top: 20%; right: -300px; width: 250px; height: 60vh; background: linear-gradient(to bottom, #ff69b4, #ff1493); color: white; padding: 15px; box-shadow: -2px 0 10px rgba(0,0,0,0.2); overflow-y: auto; z-index: 999; border-radius: 10px; transition: right 0.3s ease; opacity: 0; visibility: hidden; }
+        .cart.show { right: 20px; opacity: 1; visibility: visible; }
+        .cart h3 { text-align: center; margin-bottom: 15px; font-size: 1.3em; position: relative; }
+        .cart .close { position: absolute; top: 5px; left: 10px; background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
+        .cart-item { background-color: rgba(255,255,255,0.1); padding: 8px; margin: 8px 0; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; }
+        .cart-item button { background-color: #cccccc; color: #333; padding: 4px 8px; border-radius: 12px; font-size: 0.7em; }
+        .cart-item button:hover { background-color: #999; }
+        .total { font-weight: bold; font-size: 1.1em; text-align: center; margin: 15px 0; }
+        .order-form { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); width: 350px; max-width: 90%; z-index: 2000; }
+        .order-form h3 { color: #ff69b4; text-align: center; }
+        .order-form input, .order-form textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #cccccc; border-radius: 6px; font-size: 0.9em; }
+        .order-form button { width: 48%; margin: 5px; }
+        .contact { padding: 40px; max-width: 1200px; margin: 0 auto; text-align: center; background-color: #f8f8f8; border-radius: 10px; margin-top: 20px; }
+        .contact h2 { color: #ff69b4; font-size: 2em; margin-bottom: 20px; }
+        .contact p { font-size: 1.2em; margin: 10px 0; }
+        .contact a { color: #ff69b4; text-decoration: none; font-weight: bold; font-size: 1.5em; transition: color 0.3s; }
+        .contact a:hover { color: #ff1493; }
+        footer { background-color: #f0f0f0; text-align: center; padding: 20px; color: #666666; }
+        @media (max-width: 768px) { .cart { width: 90%; height: auto; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); right: auto; } .cart.show { right: auto; } .contact { padding: 20px; } }
+    </style>
+</head>
+<body>
+
+      <header>
+        <h1>hello at haloo</h1>
+        <nav>
+            <a href="#products">products</a>
+        </nav>
+    </header>
+       
+    
+    <div class="cart-toggle" onclick="toggleCart()"></div>
+    
+    <div class="cart" id="cart">
+        <h3><button class="close" onclick="toggleCart()">×</button> shopping cart</h3>
+        <div id="cart-items"></div>
+        <div class="total">الإجمالي: <span id="total">0</span>le</div>
+        <button onclick="showOrderForm()">creat order</button>
+    </div>
+    
+    <div class="order-form" id="order-form">
+        <h3>please enter your information</h3>
+        <form action="YOUR_FORMSPREE_URL" method="POST"> <!-- استبدل برابط Formspree -->
+            <input type="text" name="name" placeholder="الاسم الكامل" required>
+            <input type="tel" name="phone" placeholder="رقم الهاتف" required>
+            <textarea name="address" placeholder="العنوان بالتفصيل (مثل: شارع، منطقة، مدينة)" rows="4" required></textarea>
+            <input type="text" name="notes" placeholder="ملاحظات إضافية (اختياري)">
+            <input type="hidden" name="cart-details" id="cart-details">
+            <button type="submit">إرسال الطلب</button>
+            <button type="button" onclick="hideOrderForm()">إلغاء</button>
+        </form>
+    </div>
+    
+    <section id="products" class="products">
+        <div class="product">
+            <img src="https://via.placeholder.com/300x200/ff69b4/ffffff?text=منتج+رائع" alt="منتج 1">
+            <h3>منتج رائع 1</h3>
+            <p>وصف جذاب.</p>
+            <p>السعر: 50 جنيه</p>
+            <button onclick="addToCart('منتج رائع 1', 50)">أضف إلى السلة</button>
+        </div>
+        <div class="product">
+            <img src="https://via.placeholder.com/300x200/ff69b4/ffffff?text=منتج+مميز" alt="منتج 2">
+            <h3>منتج مميز 2</h3>
+            <p>تفاصيل إضافية.</p>
+            <p>السعر: 75 جنيه</p>
+            <button onclick="addToCart('منتج مميز 2', 75)">أضف إلى السلة</button>
+        </div>
+        <div class="product">
+            <img src="https://via.placeholder.com/300x200/ff69b4/ffffff?text=منتج+جديد" alt="منتج 3">
+            <h3>منتج جديد 3</h3>
+            <p>عرض خاص.</p>
+            <p>السعر: 60 جنيه</p>
+            <button onclick="addToCart('منتج جديد 3', 60)">أضف إلى السلة</button>
+        </div>
+    </section>
+    
+    <section id="contact" class="contact">
+        <h2>contact us</h2>
+        <p>for any inquiries or orders,please call us:</p>
+        <a href="tel:01554211645">01554211645</a>
+        <p>we're here for you</p>
+    </section>
+    
+    <footer>
+        <p>&copy; 2023 متجري. جميع الحقوق محفوظة.</p>
+    </footer>
+    
+    <script>
+        let cart = [];
+        let total = 0;
+        
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            total += price;
+            updateCart();
+        }
+        
+        function removeFromCart(index) {
+            total -= cart[index].price;
+            cart.splice(index, 1);
+            updateCart();
+        }
+        
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = '';
+            cart.forEach((item, index) => {
+                cartItems.innerHTML += `
+                    <div class="cart-item">
+                        ${item.name} - ${item.price} جنيه
+                        <button onclick="removeFromCart(${index})">إزالة</button>
+                    </div>
+                `;
+            });
+            document.getElementById('total').textContent = total;
+        }
+        
+        function toggleCart() {
+            const cart = document.getElementById('cart');
+            cart.classList.toggle('show');
+        }
+        
+        function showOrderForm() {
+            if (cart.length === 0) {
+                alert('السلة فارغة! أضف منتجات أولاً.');
+                return;
+            }
+            const cartDetails = cart.map(item => `${item.name} (${item.price} جنيه)`).join(', ') + ` | الإجمالي: ${total} جنيه`;
+            document.getElementById('cart-details').value = cartDetails;
+            document.getElementById('order-form').style.display = 'block';
+            toggleCart(); // إغلاق السلة عند فتح النموذج
+        }
+        
+        function hideOrderForm() {
+            document.getElementById('order-form').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
